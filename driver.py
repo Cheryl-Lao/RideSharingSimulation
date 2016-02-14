@@ -23,8 +23,16 @@ class Driver:
         @type speed: int
         @rtype: None
         """
-        # TODO
-        pass
+
+        self.name = identifier
+        self.location = location
+        self.speed = speed
+        #intended destination
+        self.destination = None
+        #status of the driver
+        self.status = "idle"
+        #the person that the driver is carrying
+        self.rider = None
 
     def __str__(self):
         """Return a string representation.
@@ -32,8 +40,8 @@ class Driver:
         @type self: Driver
         @rtype: str
         """
-        # TODO
-        pass
+        return "{} at {} is driving at a speed of {}".format (\
+            self.name, self.location.__str__(), self.speed)
 
     def __eq__(self, other):
         """Return True if self equals other, and false otherwise.
@@ -41,8 +49,8 @@ class Driver:
         @type self: Driver
         @rtype: bool
         """
-        # TODO
-        pass
+        return self.name == other.name and self.speed == other.speed \
+                and self.location ==other.location
 
     def get_travel_time(self, destination):
         """Return the time it will take to arrive at the destination,
@@ -52,8 +60,7 @@ class Driver:
         @type destination: Location
         @rtype: int
         """
-        # TODO
-        pass
+        return self.speed * (manhattan_distance(self.location, destination))
 
     def start_drive(self, location):
         """Start driving to the location and return the time the drive will take.

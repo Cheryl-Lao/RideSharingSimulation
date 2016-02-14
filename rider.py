@@ -17,5 +17,35 @@ SATISFIED = "satisfied"
 
 
 class Rider:
-    # TODO
-    pass
+    def __init__(self, name, origin, destination, patience):
+        """
+        Create a Rider object with name, origin and destination
+
+        :param name:
+            Unique identifier for the rider
+
+        :type name: str
+
+        :param origin:
+            The location where the rider wants to be picked up
+
+        :type origin: Location
+
+        :param destination:
+            The location to which the rider wishes to be driven
+
+        :type destination: Location
+
+        :param patience:
+            The number of minutes the rider will wait before cancelling
+
+        :type patience: int
+
+        :rtype: None
+        """
+
+        self.name = name
+        self.origin = origin
+        self.destination = destination
+        self.patience = patience
+        self.status = 'waiting'

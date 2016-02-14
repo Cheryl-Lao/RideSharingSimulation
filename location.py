@@ -7,24 +7,25 @@ class Location:
         @type column: int
         @rtype: None
         """
-        # TODO
-        pass
+        if row >= 0 and column >= 0:
+            self.m = column
+            self.n = row
+        else:
+            print("Please enter only positive coordinates")
 
     def __str__(self):
         """Return a string representation.
 
         @rtype: str
         """
-        # TODO
-        pass
+        return "{} streets from the left, {} streets up".format(self.m, self.n)
 
     def __eq__(self, other):
         """Return True if self equals other, and false otherwise.
 
         @rtype: bool
         """
-        # TODO
-        pass
+        return self.m == other.m and self.n == other.n
 
 
 def manhattan_distance(origin, destination):
@@ -34,8 +35,10 @@ def manhattan_distance(origin, destination):
     @type destination: Location
     @rtype: int
     """
-    # TODO
-    pass
+
+    latitude = abs(destination.n - origin.n)
+    longitude = abs(destination.m - origin.m)
+    return longitude + latitude
 
 
 def deserialize_location(location_str):
@@ -45,5 +48,15 @@ def deserialize_location(location_str):
         A location in the format 'row,col'
     @rtype: Location
     """
-    # TODO
-    pass
+
+    row = ""
+
+    i=0
+
+    while location_str[i] != ",":
+        row += location_str[i]
+        i += 1
+
+    column = location_str[i+1:]
+
+    return Location(column, row)
