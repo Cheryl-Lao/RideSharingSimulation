@@ -48,4 +48,5 @@ class Rider:
         self.origin = origin
         self.destination = destination
         self.patience = patience
-        self.status = 'waiting'
+        #set them to be waiting on default
+        self.status = WAITING
