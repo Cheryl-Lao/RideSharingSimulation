@@ -84,7 +84,8 @@ class PriorityQueue(Container):
         >>> pq.remove()
         'yellow'
         """
-        return self._items.pop(0)
+
+
 
     def is_empty(self):
         """
@@ -117,5 +118,18 @@ class PriorityQueue(Container):
         >>> pq._items
         ['blue', 'green', 'red', 'yellow']
         """
-        # TODO
-        pass
+
+        if self.is_empty():
+            self._items.append(item)
+
+        else:
+            lowest_priority = self._items[len(self._items())-1]
+            lowest_priority_index = len(self._items())-1
+
+            for i in range(len(self._items)):
+
+                if self._items[i]>lowest_priority:
+                    lowest_priority = self._items[i]
+                    lowest_priority_index = i
+            self._items.insert(i, item)
+

@@ -14,7 +14,7 @@ class Driver:
         A property that is True if the driver is idle and False otherwise.
     """
 
-    def __init__(self, identifier, location, speed):
+    def __init__(self, identifier, location, speed, destination = None):
         """Initialize a Driver.
 
         @type self: Driver
@@ -27,8 +27,6 @@ class Driver:
         self.name = identifier
         self.location = location
         self.speed = speed
-        #intended destination
-        self.destination = None
         #status of the driver
         self.status = "idle"
         #the person that the driver is carrying
