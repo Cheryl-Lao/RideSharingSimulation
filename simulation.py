@@ -50,8 +50,16 @@ class Simulation:
             An initial list of events.
         @rtype: dict[str, object]
         """
-        # TODO
-        pass
+
+        event_queue = []
+
+        for event in initial_events:
+            event_queue.add(event)
+
+        for event in event_queue:
+            new_events = event.do(self.dispatcher, self.monitor)
+            for new_event in new_events:
+                event_queue.add(new_event)
 
         # Add all initial events to the event queue.
 
