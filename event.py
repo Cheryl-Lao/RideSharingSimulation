@@ -269,7 +269,18 @@ class DriverRequest(Event):
         # rider, and the method returns a Pickup event for when the driver
         # arrives at the riders location.
         # TODO
-        pass
+
+        #below is copied from rider request
+        monitor.notify(self.timestamp, RIDER, REQUEST,
+                       self.rider.id, self.rider.origin)
+
+        events = []
+        driver = dispatcher.request_driver(self.rider)
+        if driver is not None:
+            travel_time = driver.start_drive(self.rider.origin)
+            events.append(Pickup(self.timestamp + travel_time, self.rider, driver))
+        events.append(Cancellation(self.timestamp + self.rider.patience, self.rider))
+        return events
 
     def __str__(self):
         """Return a string representation of this event.
