@@ -218,10 +218,12 @@ class RiderRequest(Event):
 
         events = []
         driver = dispatcher.request_driver(self.rider)
+
         if driver is not None:
             travel_time = driver.start_drive(self.rider.origin)
             events.append(Pickup(self.timestamp + travel_time, self.rider, driver))
         events.append(Cancellation(self.timestamp + self.rider.patience, self.rider))
+
         return events
 
     def __str__(self):
@@ -270,17 +272,12 @@ class DriverRequest(Event):
         # arrives at the riders location.
         # TODO
 
-        #below is copied from rider request
-        monitor.notify(self.timestamp, RIDER, REQUEST,
-                       self.rider.id, self.rider.origin)
+        #THIS IS AN INCOMPLETE METHOD-WATCH OUT CONSTRUCTION AHEAD
+        if self.driver not in dispatcher.available_drivers:
+            dispatcher.available_drivers.append(self.driver)
+            dispatcher.request_rider(self.driver)
 
-        events = []
-        driver = dispatcher.request_driver(self.rider)
-        if driver is not None:
-            travel_time = driver.start_drive(self.rider.origin)
-            events.append(Pickup(self.timestamp + travel_time, self.rider, driver))
-        events.append(Cancellation(self.timestamp + self.rider.patience, self.rider))
-        return events
+        return A PICKUP EVENT....WAIT WHAT
 
     def __str__(self):
         """Return a string representation of this event.
@@ -339,12 +336,12 @@ def create_event_list(filename):
             if event_type == "DriverRequest":
                 # TODO
                 # Create a DriverRequest event.
-                pass
+                DriverRequest(timestamp, Driver(tokens[2], tokens[3], tokens[4]))
+
             elif event_type == "RiderRequest":
                 # TODO
                 # Create a RiderRequest event.
-                pass
-
+                RiderRequest(timestamp, Rider(tokens[2], tokens[3], tokens[4], tokens[5]))
             events.append(event)
 
     return events
