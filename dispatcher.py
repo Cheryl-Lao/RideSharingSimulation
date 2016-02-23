@@ -1,5 +1,6 @@
 from driver import Driver
 from rider import Rider
+from container import PriorityQueue
 
 class Dispatcher:
     """A dispatcher fulfills requests from riders and drivers for a
@@ -25,8 +26,8 @@ class Dispatcher:
         """
         # TODO
 
-        waiting_list = []
-        available_drivers = []
+        self.waiting_list = PriorityQueue()
+        self.available_drivers = []
 
 
     def __str__(self):
@@ -57,7 +58,7 @@ class Dispatcher:
             pickup_place = rider.location
             closest_driver = self.available_drivers[0]
 
-            #finding the closest driver
+            #finding the driver that will get there the fastest
             for driver in self.available_drivers:
                 if (driver.get_travel_time(rider.destination)
                     < closest_driver.get_travel_time(rider.destination)):

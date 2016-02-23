@@ -142,6 +142,10 @@ class Monitor:
                 # or CANCEL. The wait time is the difference between the two.
                 wait_time += activities[1].time - activities[0].time
                 count += 1
+
+        if count == 0:
+            return 0
+
         return wait_time / count
 
     def _average_total_distance(self): #v confused pls check over
@@ -162,7 +166,11 @@ class Monitor:
                     total_distance += manhattan_distance(Location(activities[i].location[0], activities[i].location[1]),
                                                         Location(activities[i + 1].location[0], activities[i + 1].location[1]))
                 count += 1
-        return total_distance / count #what if count is 0???
+
+        if count == 0:
+            return 0
+
+        return total_distance / count
 
 
     def _average_ride_distance(self): #this also needs checking omg SO CONFUSE
@@ -187,4 +195,8 @@ class Monitor:
             if (pick_up_spot is not None and drop_off_spot is not None):
                 total_distance += manhattan_distance(Location(pick_up_spot[0],pick_up_spot[1]), Location(drop_off_spot[0],drop_off_spot[1]))
                 count += 1
-        return total_distance / count #what if count is 0???
+
+        if count == 0:
+            return 0
+
+        return total_distance / count

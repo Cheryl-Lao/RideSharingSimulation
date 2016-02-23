@@ -15,6 +15,7 @@ WAITING = "waiting"
 CANCELLED = "cancelled"
 SATISFIED = "satisfied"
 
+from location import *
 
 class Rider:
     def __init__(self, name, origin, destination, patience):

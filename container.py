@@ -75,6 +75,7 @@ class PriorityQueue(Container):
         >>> pq.add("blue")
         >>> pq.add("yellow")
         >>> pq.add("green")
+
         >>> pq.remove()
         'blue'
         >>> pq.remove()
@@ -83,6 +84,7 @@ class PriorityQueue(Container):
         'red'
         >>> pq.remove()
         'yellow'
+
         """
 
         if self.is_empty():

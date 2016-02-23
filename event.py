@@ -213,6 +213,7 @@ class RiderRequest(Event):
         @type monitor: Monitor
         @rtype: list[Event]
         """
+
         monitor.notify(self.timestamp, RIDER, REQUEST,
                        self.rider.id, self.rider.origin)
 
@@ -272,12 +273,35 @@ class DriverRequest(Event):
         # arrives at the riders location.
         # TODO
 
-        #THIS IS AN INCOMPLETE METHOD-WATCH OUT CONSTRUCTION AHEAD
-        if self.driver not in dispatcher.available_drivers:
-            dispatcher.available_drivers.append(self.driver)
-            dispatcher.request_rider(self.driver)
+        monitor.notify(self.timestamp, DRIVER, REQUEST,
+                       self.driver.id, self.driver.origin)
 
-        return A PICKUP EVENT....WAIT WHAT
+        events = []
+
+
+
+        #if there are riders waiting
+        if len(dispatcher.waiting_list) > 0:
+
+            #find the the nearest rider
+            rider = dispatcher.request_rider(self.driver)
+
+            #find how long it will take the the driver to reach the location
+            travel_time = self.driver.get_travel_time(self.driver.location, rider.location)
+
+        #The poor driver is going to go there no matter what
+        events.append(Pickup(self.timestamp + travel_time, self.rider, self.driver))
+
+
+        #driver starts driving towards the rider's location
+        self.driver.destination = rider.location
+
+        #the driver is now unavailable
+        dispatcher.available_drivers.remove(self.driver)
+
+        events.append(Pickup(self.timestamp + travel_time, self.rider, self.driver))
+
+        return Pickup(self.timestamp + travel_time, self.rider, self.driver)
 
     def __str__(self):
         """Return a string representation of this event.
