@@ -16,7 +16,7 @@ class Driver:
         A property that is True if the driver is idle and False otherwise.
     """
 
-    def __init__(self, identifier, location, speed, destination = None):
+    def __init__(self, identifier, location, speed):
         """Initialize a Driver.
 
         @type self: Driver
@@ -26,13 +26,14 @@ class Driver:
         @rtype: None
         """
 
-        self.name = identifier
+        self.id = identifier
         self.location = location
         self.speed = speed
         #status of the driver
-        self.status = "Idle"
+        self.status = "idle"
         #the person that the driver is carrying
         self.rider = None
+        self.destination = None
 
     def __str__(self):
         """Return a string representation.
@@ -41,7 +42,7 @@ class Driver:
         @rtype: str
         """
         return "{} at {} is driving at a speed of {}".format (\
-            self.name, self.location.__str__(), self.speed)
+            self.id, self.location.__str__(), self.speed)
 
     def __eq__(self, other):
         """Return True if self equals other, and false otherwise.
@@ -49,7 +50,7 @@ class Driver:
         @type self: Driver
         @rtype: bool
         """
-        return self.name == other.name and self.speed == other.speed \
+        return self.id == other.id and self.speed == other.speed \
                 and self.location ==other.location
 
     def get_travel_time(self, destination):

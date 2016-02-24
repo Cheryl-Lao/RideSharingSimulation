@@ -26,8 +26,11 @@ class Dispatcher:
         """
         # TODO
 
-        self.waiting_list = PriorityQueue()
-        self.available_drivers = []
+        #_waiting_list is a queue-like list.
+        # The person at the lowest index has been waiting the longest
+        #The person at the highest index has been waiting the shortest time
+        self._waiting_list = []
+        self._available_drivers = []
 
 
     def __str__(self):
@@ -36,8 +39,9 @@ class Dispatcher:
         @type self: Dispatcher
         @rtype: str
         """
+
         # TODO
-        return "Waiting List: {}  Available Drivers: {}".format(self.waiting_list, self.available_drivers)
+        return "Waiting List: {}  Available Drivers: {}".format(self._waiting_list, self._available_drivers)
 
     def request_driver(self, rider):
         """Return a driver for the rider, or None if no driver is available.
@@ -50,16 +54,21 @@ class Dispatcher:
         """
 
         # TODO
+
+        #Store the indexes of all of the available drivers
+
         #Add the rider to the waiting list if there are no available drivers
-        if len(self.available_drivers) == 0:
-            self.waiting_list.append(rider)
+        if len(self._available_drivers) == 0:
+            self._waiting_list.append(rider)
             return None
+
+        #Assign a suitable driver to the rider
         else:
             pickup_place = rider.location
-            closest_driver = self.available_drivers[0]
+            closest_driver = self._available_drivers[0]
 
             #finding the driver that will get there the fastest
-            for driver in self.available_drivers:
+            for driver in self._available_drivers:
                 if (driver.get_travel_time(rider.destination)
                     < closest_driver.get_travel_time(rider.destination)):
                     closest_driver = driver
@@ -81,12 +90,12 @@ class Dispatcher:
         """
 
         # TODO
+        if driver not in self._available_drivers:
+            self._available_drivers.append(driver)
 
-        self.available_drivers.append(driver)# or do i add driver to a separate "driving fleet" list
-
-        if len(self.waiting_list) > 0:
-            assigned_rider = self.waiting_list.pop(0) #is the longest waiting rider the first one on the list?
-            self.available_drivers.remove(driver)
+        if len(self._waiting_list) > 0:
+            assigned_rider = self._waiting_list.pop(0)
+            self._available_drivers.remove(driver)
             return assigned_rider
         else:
             return None
@@ -101,5 +110,5 @@ class Dispatcher:
 
         # TODO
 
-        if rider in self.waiting_list:
-            self.waiting_list.remove(rider)
+        if rider in self._waiting_list:
+            self._waiting_list.remove(rider)

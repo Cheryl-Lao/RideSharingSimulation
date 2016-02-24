@@ -18,14 +18,14 @@ SATISFIED = "satisfied"
 from location import *
 
 class Rider:
-    def __init__(self, name, origin, destination, patience):
+    def __init__(self, id, origin, destination, patience):
         """
-        Create a Rider object with name, origin and destination
+        Create a Rider object with id, origin and destination
 
-        :param name:
+        :param id:
             Unique identifier for the rider
 
-        :type name: str
+        :type id: str
 
         :param origin:
             The location where the rider wants to be picked up
@@ -45,7 +45,7 @@ class Rider:
         :rtype: None
         """
 
-        self.name = name
+        self.id = id
         self.origin = origin
         self.destination = destination
         self.patience = patience

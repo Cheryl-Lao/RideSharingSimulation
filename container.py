@@ -11,6 +11,7 @@ class Container:
         @type item: Object
         @rtype: None
         """
+
         raise NotImplementedError("Implemented in a subclass")
 
     def remove(self):
@@ -19,6 +20,7 @@ class Container:
         @type self: Container
         @rtype: Object
         """
+
         raise NotImplementedError("Implemented in a subclass")
 
     def is_empty(self):
@@ -27,6 +29,7 @@ class Container:
         @type self: Container
         @rtype: bool
         """
+
         raise NotImplementedError("Implemented in a subclass")
 
 

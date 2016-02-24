@@ -51,15 +51,18 @@ class Simulation:
         @rtype: dict[str, object]
         """
 
-        event_queue = []
-
         for event in initial_events:
-            event_queue.add(event)
+            self._events.add(event)
 
-        for event in event_queue:
-            new_events = event.do(self.dispatcher, self.monitor)
+        #repeat for every event in eventqueue even if it's growing in length
+        while not self._events.is_empty():
+
+            event_to_do = self._events.remove()
+            new_events = event_to_do.do(self._dispatcher, self._monitor)
+
             for new_event in new_events:
-                event_queue.add(new_event)
+                self._events.add(new_event)
+
 
         # Add all initial events to the event queue.
 

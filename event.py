@@ -281,7 +281,7 @@ class DriverRequest(Event):
 
 
         #if there are riders waiting
-        if len(dispatcher.waiting_list) > 0:
+        if len(dispatcher._waiting_list) > 0:
 
             #find the the nearest rider
             rider = dispatcher.request_rider(self.driver)
@@ -297,7 +297,7 @@ class DriverRequest(Event):
         self.driver.destination = rider.location
 
         #the driver is now unavailable
-        dispatcher.available_drivers.remove(self.driver)
+        dispatcher._available_drivers.remove(self.driver)
 
         events.append(Pickup(self.timestamp + travel_time, self.rider, self.driver))
 
@@ -411,7 +411,7 @@ class Pickup(Event):
         @rtype: Event
         """
 
-        monitor.notify(self.timestamp, DRIVER, PICKUP,
+        self.monitor.notify(self.timestamp, DRIVER, PICKUP,
                        self.driver.id, self.driver.origin)
 
         events = []
@@ -421,11 +421,11 @@ class Pickup(Event):
         If the rider is waiting, driver picks up rider and the Dropoff
         """
 
-        if rider.status is CANCELLED:
+        if self.rider.status is CANCELLED:
             events.append(DriverRequest(...)) ##fill this in with Cheryl's stuff
         else:
-            travel_time = driver.start_drive(self.rider.destination)
-            events.append(Dropoff(timestamp + travel_time, rider, driver))
+            travel_time = self.driver.start_drive(self.rider.destination)
+            events.append(Dropoff(self.timestamp + travel_time, self.rider, self.driver))
 
         return events
 
@@ -483,7 +483,7 @@ class Dropoff(Event):
         @type monitor: Monitor
         @rtype: Event
         """
-        monitor.notify(self.timestamp, DRIVER, DROPOFF,
+        self.monitor.notify(self.timestamp, DRIVER, DROPOFF,
                        self.driver.id, self.driver.origin)
 
         events = []
@@ -494,8 +494,8 @@ class Dropoff(Event):
         DriverRequest happens immediately after
         """
 
-        driver.location = rider.destination
-        rider.status = SATISFIED
+        self.driver.location = self.rider.destination
+        self.rider.status = SATISFIED
         events.append(DriverRequest(...)) #fill this in with Cheryl's stuff
 
         return events
@@ -507,8 +507,6 @@ class Dropoff(Event):
         @rtype: str
         """
         return "{} -- {}: Pick up".format(self.timestamp, self.driver)
-
-
 
 
 def create_event_list(filename):

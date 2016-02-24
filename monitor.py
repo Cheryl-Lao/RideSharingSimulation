@@ -21,7 +21,7 @@ request, cancel, pickup, or dropoff.
 @type DROPOFF: str
     A constant used for the dropoff activity description.
 """
-from location import * ###can i import this?
+from location import *
 
 RIDER = "rider"
 DRIVER = "driver"
@@ -121,6 +121,7 @@ class Monitor:
         @type self: Monitor
         @rtype: dict[str, object]
         """
+
         return {"rider_wait_time": self._average_wait_time(),
                 "driver_total_distance": self._average_total_distance(),
                 "driver_ride_distance": self._average_ride_distance()}
@@ -132,6 +133,7 @@ class Monitor:
         @type self: Monitor
         @rtype: float
         """
+
         wait_time = 0
         count = 0
         for activities in self._activities[RIDER].values():
@@ -148,53 +150,80 @@ class Monitor:
 
         return wait_time / count
 
-    def _average_total_distance(self): #v confused pls check over
+    def _average_total_distance(self):
         """Return the average distance drivers have driven.
 
         @type self: Monitor
         @rtype: float
+
+        >>> m = Monitor()
+        >>> m.notify(1, DRIVER, REQUEST, "steve", (0, 0))
+        >>> m.notify(2, DRIVER, PICKUP, "steve", (0, 5))
+        >>> m.notify(6, DRIVER, DROPOFF, "steve", (0, 9))
+        >>> m._average_total_distance()
+            9.0
+        >>> m.notify(7, DRIVER, REQUEST, "tod", (0, 0))
+            4.5
         """
         # TODO
         total_distance = 0
-        count = 0
+        ##count = 0
         for activities in self._activities[DRIVER].values():
             if len(activities) >= 2:
                 # There has to be more than one registered activity to calculate the distance between them
                 for i in range(len(activities) - 1):
-                    ##total_distance += manhattan_distance(activities[i].location, activities[i + 1].location)
-                    ##I can't use this line of code because apparently activities[i].location is a tuple not Location????
-                    total_distance += manhattan_distance(Location(activities[i].location[0], activities[i].location[1]),
-                                                        Location(activities[i + 1].location[0], activities[i + 1].location[1]))
-                count += 1
+                    # The distance travelled between each activity is added to total
+                    total_distance += \
+                        manhattan_distance(Location(activities[i].location[0], \
+                                                    activities[i].location[1]),
+                                        Location(activities[i + 1].location[0],\
+                                                 activities[i + 1].location[1]))
 
-        if count == 0:
-            return 0
-
-        return total_distance / count
+        return total_distance / len(self._activities[DRIVER])
 
 
-    def _average_ride_distance(self): #this also needs checking omg SO CONFUSE
+    def _average_ride_distance(self):
         """Return the average distance drivers have driven on rides.
 
         @type self: Monitor
         @rtype: float
+
+        >>> m = Monitor()
+        >>> m.notify(1, DRIVER, REQUEST, "steve", (0, 0))
+        >>> m.notify(2, DRIVER, PICKUP, "steve", (0, 5))
+        >>> m.notify(6, DRIVER, DROPOFF, "steve", (0, 9))
+        >>> m.notify(7, DRIVER, REQUEST, "tod", (0, 0))
+        >>> m._average_ride_distance()
+            4.0
+        >>> m.notify(8, DRIVER, PICKUP, "tod", (0, 0))
+        >>> m.notify(9, DRIVER, DROPOFF, "tod", (0, 1))
+        >>> m._average_ride_distance()
+            2.5
         """
         # TODO
         total_distance = 0
         count = 0
         for activities in self._activities[DRIVER].values():
+            # keeps track of the pickup and dropoff spots
             pick_up_spot = None
             drop_off_spot = None
-            for i in range(len(activities)): #activities is list of actions
+            for i in range(len(activities)):
+                #checks for pickup and dropoff activities only
                 if activities[i].description == PICKUP:
                     pick_up_spot = activities[i].location
                 elif activities[i].description == DROPOFF:
                     drop_off_spot = activities[i].location
-            print(pick_up_spot)
-            print(drop_off_spot)
-            if (pick_up_spot is not None and drop_off_spot is not None):
-                total_distance += manhattan_distance(Location(pick_up_spot[0],pick_up_spot[1]), Location(drop_off_spot[0],drop_off_spot[1]))
-                count += 1
+                if (pick_up_spot is not None and drop_off_spot is not None):
+                    #a complete pickup/dropoff pair is completed
+                    total_distance += \
+                        manhattan_distance(Location(pick_up_spot[0],\
+                                                    pick_up_spot[1]), \
+                                           Location(drop_off_spot[0],\
+                                                    drop_off_spot[1]))
+                    pick_up_spot = None #reset pickup and dropoff spot
+                    drop_off_spot = None
+
+                    count += 1
 
         if count == 0:
             return 0
