@@ -96,7 +96,6 @@ class PriorityQueue(Container):
         else:
             return self._items.pop(0)
 
-
     def is_empty(self):
         """
         Return true iff this PriorityQueue is empty.
@@ -129,25 +128,24 @@ class PriorityQueue(Container):
         ['blue', 'green', 'red', 'yellow']
         """
 
-        #only insert if the list isn't already empty
+        # Only insert if the list isn't already empty
         if not self.is_empty():
 
             i = 0
 
-            #Look for the lowest priority place to insert the item
+            # Look for the lowest priority place to insert the item
             while i < len(self._items):
-
 
                 if item <= self._items[i]:
                     self._items.insert(i, item)
 
-                    #exit the loop if it inserts
+                    # Exit the loop if it inserts
                     i = len(self._items)
 
                 elif item >= self._items[-1]:
                     self._items.append(item)
 
-                    #exit the loop if it inserts
+                    # Exit the loop if it inserts
                     i = len(self._items)
 
                 i += 1

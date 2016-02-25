@@ -78,6 +78,7 @@ class Monitor:
 
         @type self: Monitor
         """
+
         self._activities = {
             RIDER: {},
             DRIVER: {}
@@ -90,6 +91,7 @@ class Monitor:
         @type self: Monitor
         @rtype: str
         """
+
         return "Monitor ({} drivers, {} riders)".format(
                 len(self._activities[DRIVER]), len(self._activities[RIDER]))
 
@@ -109,6 +111,7 @@ class Monitor:
             The location of the activity.
         @rtype: None
         """
+
         if identifier not in self._activities[category]:
             self._activities[category][identifier] = []
 
@@ -165,23 +168,27 @@ class Monitor:
         >>> m.notify(7, DRIVER, REQUEST, "tod", (0, 0))
             4.5
         """
-        # TODO
+
         total_distance = 0
-        ##count = 0
+
         for activities in self._activities[DRIVER].values():
             if len(activities) >= 2:
-                # There has to be more than one registered activity to calculate the distance between them
+                # There has to be more than one registered activity to
+                # calculate the distance between them
                 for i in range(len(activities) - 1):
-                    # The distance travelled between each activity is added to total
+                    # The distance travelled between each activity is
+                    # added to total
                     total_distance += \
-                        manhattan_distance(Location(activities[i].location[0], \
+                        manhattan_distance(Location(activities[i].location[0],
                                                     activities[i].location[1]),
-                                        Location(activities[i + 1].location[0],\
-                                                 activities[i + 1].location[1]))
+                                           Location(activities[i + 1].
+                                                    location[0],
+                                                    activities[i + 1].
+                                                    location[1]))
         if len(self._activities[DRIVER]) == 0:
             return 0
-        return total_distance / len(self._activities[DRIVER])
 
+        return total_distance / len(self._activities[DRIVER])
 
     def _average_ride_distance(self):
         """Return the average distance drivers have driven on rides.
@@ -201,27 +208,29 @@ class Monitor:
         >>> m._average_ride_distance()
             2.5
         """
-        # TODO
+
         total_distance = 0
         count = 0
+
         for activities in self._activities[DRIVER].values():
-            # keeps track of the pickup and dropoff spots
+            # keeps track of the pickup and drop off spots
             pick_up_spot = None
             drop_off_spot = None
+
             for i in range(len(activities)):
-                #checks for pickup and dropoff activities only
+                # Checks for pickup and drop off activities only
                 if activities[i].description == PICKUP:
                     pick_up_spot = activities[i].location
                 elif activities[i].description == DROPOFF:
                     drop_off_spot = activities[i].location
-                if (pick_up_spot is not None and drop_off_spot is not None):
-                    #a complete pickup/dropoff pair is completed
+                if pick_up_spot is not None and drop_off_spot is not None:
+                    # A complete pickup/drop off pair is completed
                     total_distance += \
                         manhattan_distance(Location(pick_up_spot[0],\
                                                     pick_up_spot[1]), \
                                            Location(drop_off_spot[0],\
                                                     drop_off_spot[1]))
-                    pick_up_spot = None #reset pickup and dropoff spot
+                    pick_up_spot = None  # Reset pickup and drop off spot
                     drop_off_spot = None
 
                     count += 1

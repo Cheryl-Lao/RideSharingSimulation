@@ -18,14 +18,25 @@ class Location:
         """Return a string representation.
 
         @rtype: str
+
+        >>> location1 = Location(5,2)
+        >>> print (location1)
+        "5 streets from the left, 2 streets up"
         """
+
         return "{} streets from the left, {} streets up".format(self.m, self.n)
 
     def __eq__(self, other):
         """Return True if self equals other, and false otherwise.
 
         @rtype: bool
+
+        >>> location1 = Location(5,6)
+        >>> location2 = Location(5,6)
+        >>> location1 == location2
+        True
         """
+
         return self.m == other.m and self.n == other.n
 
 
@@ -35,6 +46,11 @@ def manhattan_distance(origin, destination):
     @type origin: Location
     @type destination: Location
     @rtype: int
+
+    >>> origin1 = Location(1,2)
+    >>> destination1 = Locatoin (2,3)
+    >>> manhattan_distance(origin1,destination1)
+    2
     """
 
     latitude = abs(destination.n - origin.n)
@@ -48,6 +64,10 @@ def deserialize_location(location_str):
     @type location_str: str
         A location in the format 'row,col'
     @rtype: Location
+
+    >>> loc_str = "22,33"
+    >>> deserialize_location(loc_str)
+    "22 streets from the left, 33 streets up"
     """
 
     row = ""

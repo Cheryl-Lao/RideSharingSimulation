@@ -35,6 +35,7 @@ class Simulation:
         @type self: Simulation
         @rtype: None
         """
+
         self._events = PriorityQueue()
         self._dispatcher = Dispatcher()
         self._monitor = Monitor()
@@ -54,7 +55,7 @@ class Simulation:
         for event in initial_events:
             self._events.add(event)
 
-        #repeat for every event in eventqueue even if it's growing in length
+        # Repeat for every event in eventqueue even if it's growing in length
         while not self._events.is_empty() and len(self._dispatcher._waiting_list) != 0:
 
             event_to_do = self._events.remove()
@@ -62,7 +63,6 @@ class Simulation:
 
             for new_event in new_events:
                 self._events.add(new_event)
-
 
         # Add all initial events to the event queue.
 

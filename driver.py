@@ -1,6 +1,7 @@
 from location import Location, manhattan_distance
 from rider import Rider
 
+
 class Driver:
     """A driver for a ride-sharing service.
 
@@ -27,7 +28,7 @@ class Driver:
         self.location = location
         self.speed = speed
 
-        #the person that the driver is carrying
+        # The person that the driver is carrying
         self.rider = None
         self.destination = None
 
@@ -36,7 +37,15 @@ class Driver:
 
         @type self: Driver
         @rtype: str
+
+        >>> location1 = Location(3,4)
+        >>> speed1 = 3
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> print(driver1)
+        "John Doe at 3 streets from the left, 4 streets up is driving at a speed of 3"
         """
+
         return "{} at {} is driving at a speed of {}".format (\
             self.id, self.location.__str__(), self.speed)
 
@@ -45,9 +54,21 @@ class Driver:
 
         @type self: Driver
         @rtype: bool
+
+        >>> location1 = Location(1,2)
+        >>> speed1 = 3
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> location2 = Location(1,2)
+        >>> speed2 = 3
+        >>> id2 = 'John Doe'
+        >>> driver2 = Driver(id2, location2, speed2)
+        >>> driver1 == driver2
+        True
         """
+
         return self.id == other.id and self.speed == other.speed \
-                and self.location ==other.location
+            and self.location ==other.location
 
     def get_travel_time(self, destination):
         """Return the time it will take to arrive at the destination,
@@ -56,17 +77,35 @@ class Driver:
         @type self: Driver
         @type destination: Location
         @rtype: int
+
+        >>> location1 = Location(1,2)
+        >>> speed1 = 3
+        >>> id1 = 'John Doe'
+        >>> driver = Driver(id1, location1, speed1)
+        >>> destination1 = Location (2,4)
+        >>> driver.get_travel_time(destination1)
+        1
         """
-        return round((manhattan_distance(self.location, destination)) / self.speed, 2)
+
+        return round((manhattan_distance(self.location, destination)) /
+                     self.speed, 2)
 
     def start_drive(self, location):
-        """Start driving to the location and return the time the drive will take.
+        """"Start driving to the location and return the time the drive will take.
 
         @type self: Driver
         @type location: Location
         @rtype: int
+
+        >>> location1 = Location(1,2)
+        >>> speed1 = 3
+        >>> id1 = 'John Doe'
+        >>> driver = Driver(id1, location1, speed1)
+        >>> location2 = Location (2,4)
+        >>> driver.start_drive(location2)
+        1
+
         """
-        # TODO
 
         self.destination = location
         return self.get_travel_time(location)
@@ -78,12 +117,21 @@ class Driver:
 
         @type self: Driver
         @rtype: None
+
+        >>> location1 = Location(1,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver = Driver(id1, location1, speed1)
+        >>> location2 = Location (2,4)
+        >>> driver.start_drive(location2)
+        1
+        >>> driver.end_drive()
+        >>> driver.destination
+        None
         """
-        # TODO
 
         self.location = self.destination
         self.destination = None
-
 
     def start_ride(self, rider):
         """Start a ride and return the time the ride will take.
@@ -91,10 +139,20 @@ class Driver:
         @type self: Driver
         @type rider: Rider
         @rtype: int
-        """
-        # TODO
 
-        #assign rider to the driver
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> speed2 = 4
+        >>> id2 = 'John Doe'
+        >>> driver = Driver(id2, origin1, speed2)
+        >>> driver.start_ride(rider1)
+        5
+        """
+
+        # Assign rider to the driver
         self.rider = rider
         self.destination = rider.destination
 
@@ -108,8 +166,21 @@ class Driver:
 
         @type self: Driver
         @rtype: None
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> speed2 = 4
+        >>> id2 = 'John Doe'
+        >>> driver = Driver(id2, origin1, speed2)
+        >>> driver.start_ride(rider1)
+        5
+        >>> driver.end_drive()
+        >>> driver.destination
+        None
         """
-        # TODO
 
         self.location = self.destination
         self.rider = None

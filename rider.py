@@ -17,7 +17,9 @@ SATISFIED = "satisfied"
 
 from location import *
 
+
 class Rider:
+
     def __init__(self, id, origin, destination, patience):
         """
         Create a Rider object with id, origin and destination
@@ -49,5 +51,5 @@ class Rider:
         self.origin = origin
         self.destination = destination
         self.patience = patience
-        #set them to be waiting on default
+        # Set them to be waiting on default
         self.status = WAITING
