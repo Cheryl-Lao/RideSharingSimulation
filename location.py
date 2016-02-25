@@ -7,6 +7,7 @@ class Location:
         @type column: int
         @rtype: None
         """
+
         if row >= 0 and column >= 0:
             self.m = column
             self.n = row
@@ -56,7 +57,7 @@ def deserialize_location(location_str):
     while location_str[i] != ",":
         row += location_str[i]
         i += 1
-
-    column = location_str[i+1:]
+    row = int(row)
+    column = int(location_str[i+1:])
 
     return Location(column, row)

@@ -55,7 +55,7 @@ class Simulation:
             self._events.add(event)
 
         #repeat for every event in eventqueue even if it's growing in length
-        while not self._events.is_empty():
+        while not self._events.is_empty() and len(self._dispatcher._waiting_list) != 0:
 
             event_to_do = self._events.remove()
             new_events = event_to_do.do(self._dispatcher, self._monitor)

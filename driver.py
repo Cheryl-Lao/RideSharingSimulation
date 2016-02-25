@@ -1,9 +1,6 @@
 from location import Location, manhattan_distance
 from rider import Rider
 
-IDLE = "idle"
-DRIVING = "driving"
-
 class Driver:
     """A driver for a ride-sharing service.
 
@@ -29,8 +26,7 @@ class Driver:
         self.id = identifier
         self.location = location
         self.speed = speed
-        #status of the driver
-        self.status = "idle"
+
         #the person that the driver is carrying
         self.rider = None
         self.destination = None
@@ -72,7 +68,6 @@ class Driver:
         """
         # TODO
 
-        self.status = DRIVING #Do I need to remove it from the available drivers??
         self.destination = location
         return self.get_travel_time(location)
 
@@ -86,7 +81,6 @@ class Driver:
         """
         # TODO
 
-        self.status = IDLE
         self.location = self.destination
         self.destination = None
 
@@ -102,7 +96,6 @@ class Driver:
 
         #assign rider to the driver
         self.rider = rider
-        self.status = DRIVING
         self.destination = rider.destination
 
         return self.get_travel_time(rider.destination)
@@ -118,7 +111,6 @@ class Driver:
         """
         # TODO
 
-        self.status = IDLE
         self.location = self.destination
         self.rider = None
-        #Do I need to change the rider's status to satisfied??
+

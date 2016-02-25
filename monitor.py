@@ -178,7 +178,8 @@ class Monitor:
                                                     activities[i].location[1]),
                                         Location(activities[i + 1].location[0],\
                                                  activities[i + 1].location[1]))
-
+        if len(self._activities[DRIVER]) == 0:
+            return 0
         return total_distance / len(self._activities[DRIVER])
 
 

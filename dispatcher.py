@@ -54,9 +54,6 @@ class Dispatcher:
         """
 
         # TODO
-
-        #Store the indexes of all of the available drivers
-
         #Add the rider to the waiting list if there are no available drivers
         if len(self._available_drivers) == 0:
             self._waiting_list.append(rider)
@@ -65,18 +62,23 @@ class Dispatcher:
         #Assign a suitable driver to the rider
         else:
             pickup_place = rider.location
-            closest_driver = self._available_drivers[0]
+
+            #arbitrarily set the closest driver as the first one in
+            # then list then compares to find the real closest one
+            fastest_driver = self._available_drivers[0]
 
             #finding the driver that will get there the fastest
+            #If two of them would get there the same time, take the
+            #driver that comes earlier in the list
             for driver in self._available_drivers:
                 if (driver.get_travel_time(rider.destination)
-                    < closest_driver.get_travel_time(rider.destination)):
-                    closest_driver = driver
+                    < fastest_driver.get_travel_time(rider.destination)):
+                    fastest_driver = driver
 
                     #assigning the rider to that driver
-                    closest_driver.rider = rider
+                    fastest_driver.rider = rider
 
-            return closest_driver
+            return fastest_driver
 
 
     def request_rider(self, driver):
@@ -90,6 +92,7 @@ class Dispatcher:
         """
 
         # TODO
+
         if driver not in self._available_drivers:
             self._available_drivers.append(driver)
 
@@ -97,6 +100,7 @@ class Dispatcher:
             assigned_rider = self._waiting_list.pop(0)
             self._available_drivers.remove(driver)
             return assigned_rider
+
         else:
             return None
 
