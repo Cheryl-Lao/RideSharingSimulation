@@ -47,6 +47,7 @@ class Event:
     # The following six 'magic methods' are overridden to allow for easy
     # comparison of Event instances. All comparisons simply perform the
     # same comparison on the 'timestamp' attribute of the two events.
+
     def __eq__(self, other):
         """Return True iff this Event is equal to <other>.
 
@@ -485,7 +486,7 @@ class Dropoff(Event):
         @rtype: Event
         """
 
-        self.monitor.notify(self.timestamp, DRIVER, DROPOFF,
+        monitor.notify(self.timestamp, DRIVER, DROPOFF,
                        self.driver.id, self.driver.origin)
 
         events = []
@@ -496,7 +497,6 @@ class Dropoff(Event):
         DriverRequest happens immediately after
         """
 
-        ##self.driver.location = self.rider.destination
         self.rider.status = SATISFIED
 
         self.driver.end_ride()
@@ -550,14 +550,16 @@ def create_event_list(filename):
 
                 # Create a DriverRequest event.
                 event = DriverRequest(timestamp, Driver(tokens[2],
-                        deserialize_location(tokens[3]), int(tokens[4])))
+                                      deserialize_location(tokens[3]),
+                                                        int(tokens[4])))
 
             elif event_type == "RiderRequest":
 
                 # Create a RiderRequest event.
                 event = RiderRequest(timestamp, Rider(tokens[2],
-                        deserialize_location(tokens[3]),
-                        deserialize_location(tokens[4]), int(tokens[5])))
+                                     deserialize_location(tokens[3]),
+                                     deserialize_location(tokens[4]),
+                                                      int(tokens[5])))
             events.append(event)
 
     return events
