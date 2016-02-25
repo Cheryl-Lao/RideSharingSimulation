@@ -52,23 +52,21 @@ class Simulation:
         @rtype: dict[str, object]
         """
 
+        # Add all initial events to the event queue.
         for event in initial_events:
             self._events.add(event)
-
-        # Repeat for every event in event queue even if it's growing in length
-        while not self._events.is_empty():
-
-            event_to_do = self._events.remove()
-            new_events = event_to_do.do(self._dispatcher, self._monitor)
-
-            for new_event in new_events:
-                self._events.add(new_event)
-
-        # Add all initial events to the event queue.
 
         # Until there are no more events, remove an event
         # from the event queue and do it. Add any returned
         # events to the event queue.
+        while not self._events.is_empty():
+
+            event_to_do = self._events.remove()
+
+            new_events = event_to_do.do(self._dispatcher, self._monitor)
+
+            for new_event in new_events:
+                self._events.add(new_event)
 
         return self._monitor.report()
 

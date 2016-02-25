@@ -51,3 +51,13 @@ class Rider:
         self.patience = patience
         # Set them to be waiting on default
         self.status = WAITING
+
+    def __str__(self):
+        """Return a string representation.
+
+        @type self: Rider
+        @rtype: str
+        """
+
+        return "{} wants to go from ({}) to ({}) and is {}"\
+            .format(self.id, self.origin, self.destination, self.status)

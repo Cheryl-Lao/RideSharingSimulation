@@ -1,5 +1,6 @@
 from driver import Driver
 from rider import Rider
+from location import Location
 
 
 class Dispatcher:
@@ -38,8 +39,16 @@ class Dispatcher:
         @rtype: str
         """
 
+        str_waiting_list = []
+        for rider in self._waiting_list:
+            str_waiting_list.append(str(rider))
+
+        str_available_drivers = []
+        for driver in self._waiting_list:
+            str_available_drivers.append(str(driver))
+
         return "Waiting List: {}  Available Drivers: {}".\
-            format(self._waiting_list, self._available_drivers)
+            format(str_waiting_list, str_available_drivers)
 
     def request_driver(self, rider):
         """Return a driver for the rider, or None if no driver is available.
@@ -80,7 +89,7 @@ class Dispatcher:
             # driver that comes earlier in the list
             for driver in self._available_drivers:
                 if driver.get_travel_time(pickup_place) < \
-                        fastest_driver.get_travel_time(pickup_place)\
+                        fastest_driver.get_travel_time(pickup_place) \
                         and driver.is_idle:
 
                     fastest_driver = driver
@@ -104,8 +113,6 @@ class Dispatcher:
             self._available_drivers.append(driver)
 
         if len(self._waiting_list) == 0:
-            #TODO
-            print("There are no riders in the waiting list left!")
             return None
 
         else:
@@ -136,3 +143,4 @@ class Dispatcher:
         """
 
         self._waiting_list.remove(rider)
+

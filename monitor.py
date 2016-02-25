@@ -83,7 +83,6 @@ class Monitor:
             RIDER: {},
             DRIVER: {}
         }
-        """@type _activities: dict[str, dict[str, list[Activity]]]"""
 
     def __str__(self):
         """Return a string representation.
@@ -181,12 +180,8 @@ class Monitor:
                     # The distance travelled between each activity is
                     # added to total
                     total_distance += \
-                        manhattan_distance(Location(activities[i].location.m,
-                                                    activities[i].location.n),
-                                           Location(activities[i + 1].
-                                                    location.m,
-                                                    activities[i + 1].
-                                                    location.n))
+                        manhattan_distance(activities[i],activities[i + 1])
+
         if len(self._activities[DRIVER]) == 0:
             return 0
 
@@ -220,11 +215,14 @@ class Monitor:
             drop_off_spot = None
 
             for i in range(len(activities)):
+
                 # Checks for pickup and drop off activities only
                 if activities[i].description == PICKUP:
                     pick_up_spot = activities[i].location
+
                 elif activities[i].description == DROPOFF:
                     drop_off_spot = activities[i].location
+
                 if pick_up_spot is not None and drop_off_spot is not None:
                     # A complete pickup/drop off pair is completed
                     total_distance += \

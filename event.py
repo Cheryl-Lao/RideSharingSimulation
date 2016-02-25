@@ -286,8 +286,6 @@ class DriverRequest(Event):
 
         # If there was no rider, just return an empty list of events
         if rider is None:
-            # TODO
-            print("there was no rider")
             return events
 
         # Find how long it will take the the driver to reach the location
@@ -352,12 +350,10 @@ class Cancellation(Event):
 
             self.rider.status = CANCELLED
 
+            dispatcher.cancel_ride(self.rider)
+
             monitor.notify(self.timestamp + self.rider.patience, RIDER,
                            CANCEL, self.rider.id, self.rider.origin)
-
-        # Don't cancel if the rider is satisfied already
-        elif self.rider.status == SATISFIED:
-            pass
 
         return events
 
