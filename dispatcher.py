@@ -1,8 +1,6 @@
 from driver import Driver
 from rider import Rider
 
-IDLE = "idle"
-DRIVING = "driving"
 
 class Dispatcher:
     """A dispatcher fulfills requests from riders and drivers for a
@@ -57,18 +55,19 @@ class Dispatcher:
         i = 0
         nobody_available = True
         while i < len(self._available_drivers) and nobody_available:
-            if self._available_drivers[i].status == IDLE:
+            if self._available_drivers[i].is_idle:
                 nobody_available = False
             i += 1
 
         # Add the rider to the waiting list if there are no available drivers
         if nobody_available:
+
             self._waiting_list.append(rider)
             return None
 
         # Assign a suitable driver to the rider
         else:
-            pickup_place = rider.location
+            pickup_place = rider.origin
 
             # Arbitrarily set the closest driver as the first one in
             # then list then compares to find the real closest one
@@ -78,9 +77,9 @@ class Dispatcher:
             # If two of them would get there the same time, take the
             # driver that comes earlier in the list
             for driver in self._available_drivers:
-                if driver.get_travel_time(rider.destination) < \
-                        fastest_driver.get_travel_time(rider.destination)\
-                        and driver.status == IDLE:
+                if driver.get_travel_time(pickup_place) < \
+                        fastest_driver.get_travel_time(pickup_place)\
+                        and driver.is_idle:
 
                     fastest_driver = driver
 
@@ -102,16 +101,15 @@ class Dispatcher:
         if driver not in self._available_drivers:
             self._available_drivers.append(driver)
 
-        if len(self._waiting_list) > 0:
+        if len(self._waiting_list) == 0:
+            return None
+
+        else:
             assigned_rider = self._waiting_list.pop(0)
             # Driver starts going towards the rider
             driver.destination = assigned_rider.origin
 
-
-            return assigned_rider
-
-        else:
-            return None
+        return assigned_rider
 
     def cancel_ride(self, rider):
         """Cancel the ride for rider.

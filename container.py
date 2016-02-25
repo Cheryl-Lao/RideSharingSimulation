@@ -152,4 +152,3 @@ class PriorityQueue(Container):
 
         else:
             self._items.append(item)
-

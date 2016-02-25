@@ -72,7 +72,7 @@ def deserialize_location(location_str):
 
     row = ""
 
-    i=0
+    i = 0
 
     while location_str[i] != ",":
         row += location_str[i]

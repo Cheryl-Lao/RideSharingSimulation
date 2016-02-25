@@ -1,8 +1,6 @@
 from location import Location, manhattan_distance
 from rider import Rider
 
-IDLE = "idle"
-DRIVING = "driving"
 
 class Driver:
     """A driver for a ride-sharing service.
@@ -29,12 +27,11 @@ class Driver:
         self.id = identifier
         self.location = location
         self.speed = speed
-
+        # Idle on default
+        self.is_idle = True
         # The person that the driver is carrying
         self.rider = None
         self.destination = None
-
-        self.status = IDLE
 
     def __str__(self):
         """Return a string representation.
@@ -47,11 +44,17 @@ class Driver:
         >>> id1 = 'John Doe'
         >>> driver1 = Driver(id1, location1, speed1)
         >>> print(driver1)
-        "John Doe at 3 streets from the left, 4 streets up is driving at a speed of 3"
+        "John Doe at 3 streets from the left, 4 streets up has a speed of 3 and
+        is idle"
         """
 
-        return "{} at {} is driving at a speed of {}".format (\
-            self.id, self.location.__str__(), self.speed)
+        if self.is_idle:
+            idle = "is idle"
+        else:
+            idle = "is driving"
+
+        return "{} at {} has a speed of {} and {}".format(
+            self.id, self.location.__str__(), self.speed, idle)
 
     def __eq__(self, other):
         """Return True if self equals other, and false otherwise.
@@ -72,7 +75,7 @@ class Driver:
         """
 
         return self.id == other.id and self.speed == other.speed \
-            and self.location ==other.location
+            and self.location == other.location
 
     def get_travel_time(self, destination):
         """Return the time it will take to arrive at the destination,
@@ -91,8 +94,8 @@ class Driver:
         1
         """
 
-        return round((manhattan_distance(self.location, destination)) /
-                     self.speed, 2)
+        return int(round((manhattan_distance(self.location, destination)) /
+                   self.speed, 0))
 
     def start_drive(self, location):
         """"Start driving to the location and return the time the drive will take.
@@ -111,8 +114,8 @@ class Driver:
 
         """
 
-        self.status = DRIVING
         self.destination = location
+        self.is_idle = False
         return self.get_travel_time(location)
 
     def end_drive(self):
@@ -135,8 +138,8 @@ class Driver:
         None
         """
 
-        self.status = IDLE
         self.location = self.destination
+        self.is_idle = True
         self.destination = None
 
     def start_ride(self, rider):
@@ -160,8 +163,9 @@ class Driver:
 
         # Assign rider to the driver
         self.rider = rider
+        # Goes towards the same dropoff location
         self.destination = rider.destination
-        self.status = DRIVING
+        self.is_idle = False
         return self.get_travel_time(rider.destination)
 
     def end_ride(self):
@@ -189,6 +193,6 @@ class Driver:
         """
 
         self.location = self.destination
+        self.is_idle = True
+        self.destination = None
         self.rider = None
-        self.status = IDLE
-

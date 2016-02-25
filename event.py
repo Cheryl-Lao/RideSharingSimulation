@@ -42,6 +42,7 @@ class Event:
         >>> Event(7).timestamp
         7
         """
+
         self.timestamp = timestamp
 
     # The following six 'magic methods' are overridden to allow for easy
@@ -284,13 +285,13 @@ class DriverRequest(Event):
         rider = dispatcher.request_rider(self.driver)
 
         # Find how long it will take the the driver to reach the location
-        travel_time = self.driver.get_travel_time(rider.origin)
+        travel_time = self.driver.get_travel_time(self.driver.destination)
 
         # The poor driver is going to go there no matter what
         events.append(Pickup(self.timestamp + travel_time, rider, self.driver))
 
         # Driver starts driving towards the rider's location
-        self.driver.start_drive(rider.origin)
+        self.driver.start_drive(self.driver.destination)
 
         events.append(Pickup(self.timestamp + travel_time, rider, self.driver))
 
@@ -345,7 +346,7 @@ class Cancellation(Event):
 
             self.rider.status = CANCELLED
             monitor.notify(self.timestamp + self.rider.patience, RIDER,
-                           CANCELLED, self.rider.id, self.rider.location)
+                           CANCEL, self.rider.id, self.rider.location)
 
         # Don't cancel if the rider is satisfied already
         elif self.rider.status == SATISFIED:
