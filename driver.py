@@ -177,7 +177,7 @@ class Driver:
         >>> driver = Driver(id2, origin1, speed2)
         >>> driver.start_ride(rider1)
         5
-        >>> driver.end_drive()
+        >>> driver.end_ride()
         >>> driver.destination
         None
         """
