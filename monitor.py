@@ -139,6 +139,7 @@ class Monitor:
 
         wait_time = 0
         count = 0
+
         for activities in self._activities[RIDER].values():
             # A rider that has less than two activities hasn't finished
             # waiting (they haven't cancelled or been picked up).
@@ -160,13 +161,14 @@ class Monitor:
         @rtype: float
 
         >>> m = Monitor()
-        >>> m.notify(1, DRIVER, REQUEST, "steve", (0, 0))
-        >>> m.notify(2, DRIVER, PICKUP, "steve", (0, 5))
-        >>> m.notify(6, DRIVER, DROPOFF, "steve", (0, 9))
+        >>> m.notify(1, DRIVER, REQUEST, "steve", Location(0, 0))
+        >>> m.notify(2, DRIVER, PICKUP, "steve", Location(0, 5))
+        >>> m.notify(6, DRIVER, DROPOFF, "steve", Location(0, 9))
         >>> m._average_total_distance()
             9.0
-        >>> m.notify(7, DRIVER, REQUEST, "tod", (0, 0))
+        >>> m.notify(7, DRIVER, REQUEST, "tod", Location(0, 0))
             4.5
+
         """
 
         total_distance = 0
@@ -179,12 +181,12 @@ class Monitor:
                     # The distance travelled between each activity is
                     # added to total
                     total_distance += \
-                        manhattan_distance(Location(activities[i].location[0],
-                                                    activities[i].location[1]),
+                        manhattan_distance(Location(activities[i].location.m,
+                                                    activities[i].location.n),
                                            Location(activities[i + 1].
-                                                    location[0],
+                                                    location.m,
                                                     activities[i + 1].
-                                                    location[1]))
+                                                    location.n))
         if len(self._activities[DRIVER]) == 0:
             return 0
 
@@ -197,14 +199,14 @@ class Monitor:
         @rtype: float
 
         >>> m = Monitor()
-        >>> m.notify(1, DRIVER, REQUEST, "steve", (0, 0))
-        >>> m.notify(2, DRIVER, PICKUP, "steve", (0, 5))
-        >>> m.notify(6, DRIVER, DROPOFF, "steve", (0, 9))
-        >>> m.notify(7, DRIVER, REQUEST, "tod", (0, 0))
+        >>> m.notify(1, DRIVER, REQUEST, "steve", Location(0, 0))
+        >>> m.notify(2, DRIVER, PICKUP, "steve", Location(0, 5))
+        >>> m.notify(6, DRIVER, DROPOFF, "steve", Location(0, 9))
+        >>> m.notify(7, DRIVER, REQUEST, "tod", Location(0, 0))
         >>> m._average_ride_distance()
             4.0
-        >>> m.notify(8, DRIVER, PICKUP, "tod", (0, 0))
-        >>> m.notify(9, DRIVER, DROPOFF, "tod", (0, 1))
+        >>> m.notify(8, DRIVER, PICKUP, "tod", Location(0, 0))
+        >>> m.notify(9, DRIVER, DROPOFF, "tod", Location(0, 1))
         >>> m._average_ride_distance()
             2.5
         """
@@ -226,10 +228,7 @@ class Monitor:
                 if pick_up_spot is not None and drop_off_spot is not None:
                     # A complete pickup/drop off pair is completed
                     total_distance += \
-                        manhattan_distance(Location(pick_up_spot[0],\
-                                                    pick_up_spot[1]), \
-                                           Location(drop_off_spot[0],\
-                                                    drop_off_spot[1]))
+                        manhattan_distance(pick_up_spot, drop_off_spot)
                     pick_up_spot = None  # Reset pickup and drop off spot
                     drop_off_spot = None
 

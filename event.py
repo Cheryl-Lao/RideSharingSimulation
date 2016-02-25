@@ -284,6 +284,12 @@ class DriverRequest(Event):
         # Find the the nearest rider
         rider = dispatcher.request_rider(self.driver)
 
+        # If there was no rider, just return an empty list of events
+        if rider is None:
+            # TODO
+            print("there was no rider")
+            return events
+
         # Find how long it will take the the driver to reach the location
         travel_time = self.driver.get_travel_time(self.driver.destination)
 
@@ -345,8 +351,9 @@ class Cancellation(Event):
         if self.rider.status == WAITING:
 
             self.rider.status = CANCELLED
+
             monitor.notify(self.timestamp + self.rider.patience, RIDER,
-                           CANCEL, self.rider.id, self.rider.location)
+                           CANCEL, self.rider.id, self.rider.origin)
 
         # Don't cancel if the rider is satisfied already
         elif self.rider.status == SATISFIED:
@@ -361,8 +368,8 @@ class Cancellation(Event):
         @rtype: str
         """
 
-        return "{} -- {} -- {}: Cancel a ride".format\
-            (self.timestamp, self.rider)
+        return "{} -- {} -- {}: Cancel a ride"\
+            .format(self.timestamp, self.rider)
 
 
 class Pickup(Event):
@@ -374,12 +381,7 @@ class Pickup(Event):
 
     If the rider has cancelled, the driver requests a new rider immediately
 
-    Change a waiting rider to a cancelled rider unless if the rider has
-    already been picked up.
-
     @type self: Pickup
-    @type dispatcher: Dispatcher
-    @type monitor: Monitor
     @rtype: None
 
     >>>
@@ -447,8 +449,6 @@ class Dropoff(Event):
     left satisfied. The driver requests a new rider immediately.
 
     @type self: Dropoff
-    @type dispatcher: Dispatcher
-    @type monitor: Monitor
     @rtype: RiderRequest
 
     >>>
@@ -485,7 +485,7 @@ class Dropoff(Event):
         """
 
         monitor.notify(self.timestamp, DRIVER, DROPOFF,
-                       self.driver.id, self.driver.origin)
+                       self.driver.id, self.driver.location)
 
         events = []
 
@@ -524,6 +524,7 @@ def create_event_list(filename):
         The name of a file that contains the list of events.
     @rtype: list[Event]
     """
+
     events = []
     with open(filename, "r") as file:
         for line in file:

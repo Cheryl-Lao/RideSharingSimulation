@@ -53,7 +53,9 @@ class Dispatcher:
 
         # Check whether or not there are available drivers
         i = 0
+
         nobody_available = True
+
         while i < len(self._available_drivers) and nobody_available:
             if self._available_drivers[i].is_idle:
                 nobody_available = False
@@ -83,8 +85,8 @@ class Dispatcher:
 
                     fastest_driver = driver
 
-                    # assigning the rider to that driver
-                    fastest_driver.rider = rider
+            # assigning the rider to the fastest driver
+            fastest_driver.rider = rider
 
             return fastest_driver
 
@@ -102,9 +104,12 @@ class Dispatcher:
             self._available_drivers.append(driver)
 
         if len(self._waiting_list) == 0:
+            #TODO
+            print("There are no riders in the waiting list left!")
             return None
 
         else:
+            # The rider at the front of the list has been waiting the longest
             assigned_rider = self._waiting_list.pop(0)
             # Driver starts going towards the rider
             driver.destination = assigned_rider.origin
@@ -117,7 +122,17 @@ class Dispatcher:
         @type self: Dispatcher
         @type rider: Rider
         @rtype: None
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(12,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._waiting_list.append(rider1)
+        >>> dispatcher.cancel_ride(rider1)
+        >>> dispatcher._waiting_list
+        []
         """
 
-        if rider in self._waiting_list:
-            self._waiting_list.remove(rider)
+        self._waiting_list.remove(rider)
