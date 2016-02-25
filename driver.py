@@ -1,6 +1,8 @@
 from location import Location, manhattan_distance
 from rider import Rider
 
+IDLE = "idle"
+DRIVING = "driving"
 
 class Driver:
     """A driver for a ride-sharing service.
@@ -31,6 +33,8 @@ class Driver:
         # The person that the driver is carrying
         self.rider = None
         self.destination = None
+
+        self.status = IDLE
 
     def __str__(self):
         """Return a string representation.
@@ -107,6 +111,7 @@ class Driver:
 
         """
 
+        self.status = DRIVING
         self.destination = location
         return self.get_travel_time(location)
 
@@ -130,6 +135,7 @@ class Driver:
         None
         """
 
+        self.status = IDLE
         self.location = self.destination
         self.destination = None
 
@@ -155,7 +161,7 @@ class Driver:
         # Assign rider to the driver
         self.rider = rider
         self.destination = rider.destination
-
+        self.status = DRIVING
         return self.get_travel_time(rider.destination)
 
     def end_ride(self):
@@ -184,4 +190,5 @@ class Driver:
 
         self.location = self.destination
         self.rider = None
+        self.status = IDLE
 

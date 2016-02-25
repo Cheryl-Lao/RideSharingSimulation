@@ -48,7 +48,7 @@ def manhattan_distance(origin, destination):
     @rtype: int
 
     >>> origin1 = Location(1,2)
-    >>> destination1 = Locatoin (2,3)
+    >>> destination1 = Location (2,3)
     >>> manhattan_distance(origin1,destination1)
     2
     """

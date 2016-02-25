@@ -292,9 +292,6 @@ class DriverRequest(Event):
         # Driver starts driving towards the rider's location
         self.driver.start_drive(rider.origin)
 
-        # The driver is now unavailable
-        dispatcher.request_rider(self.driver)
-
         events.append(Pickup(self.timestamp + travel_time, rider, self.driver))
 
         return events

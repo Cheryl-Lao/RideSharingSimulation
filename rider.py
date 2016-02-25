@@ -15,19 +15,17 @@ WAITING = "waiting"
 CANCELLED = "cancelled"
 SATISFIED = "satisfied"
 
-from location import *
-
 
 class Rider:
 
-    def __init__(self, id, origin, destination, patience):
+    def __init__(self, identifier, origin, destination, patience):
         """
         Create a Rider object with id, origin and destination
 
-        :param id:
+        :param identifier:
             Unique identifier for the rider
 
-        :type id: str
+        :type identifier: str
 
         :param origin:
             The location where the rider wants to be picked up
@@ -47,7 +45,7 @@ class Rider:
         :rtype: None
         """
 
-        self.id = id
+        self.id = identifier
         self.origin = origin
         self.destination = destination
         self.patience = patience

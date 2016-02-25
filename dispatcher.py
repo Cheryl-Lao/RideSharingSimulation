@@ -1,6 +1,8 @@
 from driver import Driver
 from rider import Rider
 
+IDLE = "idle"
+DRIVING = "driving"
 
 class Dispatcher:
     """A dispatcher fulfills requests from riders and drivers for a
@@ -51,8 +53,16 @@ class Dispatcher:
         @rtype: Driver | None
         """
 
+        # Check whether or not there are available drivers
+        i = 0
+        nobody_available = True
+        while i < len(self._available_drivers) and nobody_available:
+            if self._available_drivers[i].status == IDLE:
+                nobody_available = False
+            i += 1
+
         # Add the rider to the waiting list if there are no available drivers
-        if len(self._available_drivers) == 0:
+        if nobody_available:
             self._waiting_list.append(rider)
             return None
 
@@ -64,12 +74,13 @@ class Dispatcher:
             # then list then compares to find the real closest one
             fastest_driver = self._available_drivers[0]
 
-            # Finding the driver that will get there the fastest
+            # Finding the available driver that will get there the fastest
             # If two of them would get there the same time, take the
             # driver that comes earlier in the list
             for driver in self._available_drivers:
                 if driver.get_travel_time(rider.destination) < \
-                        fastest_driver.get_travel_time(rider.destination):
+                        fastest_driver.get_travel_time(rider.destination)\
+                        and driver.status == IDLE:
 
                     fastest_driver = driver
 
@@ -95,7 +106,8 @@ class Dispatcher:
             assigned_rider = self._waiting_list.pop(0)
             # Driver starts going towards the rider
             driver.destination = assigned_rider.origin
-            self._available_drivers.remove(driver)
+
+
             return assigned_rider
 
         else:
