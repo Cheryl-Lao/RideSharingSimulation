@@ -37,6 +37,21 @@ class Dispatcher:
 
         @type self: Dispatcher
         @rtype: str
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(7,8)
+        >>> destination1 = Location(5,6)
+        >>> patience1 = 10
+        >>> rider = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._available_drivers.append(driver)
+        >>> dispatcher._waiting_list(rider)
+        >>> print(dispatcher)
+        >>>
         """
 
         str_waiting_list = []
@@ -58,6 +73,20 @@ class Dispatcher:
         @type self: Dispatcher
         @type rider: Rider
         @rtype: Driver | None
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher.available_drivers.append(driver)
+        >>> print(dispatcher.request_driver(rider))
+        "John Doe at 3 streets from the left, 2 streets up has a speed of 5 and is idle."
         """
 
         # Check whether or not there are available drivers
@@ -72,14 +101,13 @@ class Dispatcher:
 
         # Add the rider to the waiting list if there are no available drivers
         if nobody_available:
-
+            # Add the person to the waiting list
             self._waiting_list.append(rider)
             return None
 
         # Assign a suitable driver to the rider
         else:
             pickup_place = rider.origin
-
             # Arbitrarily set the closest driver as the first one in
             # then list then compares to find the real closest one
             fastest_driver = self._available_drivers[0]
@@ -88,6 +116,7 @@ class Dispatcher:
             # If two of them would get there the same time, take the
             # driver that comes earlier in the list
             for driver in self._available_drivers:
+
                 if driver.get_travel_time(pickup_place) < \
                         fastest_driver.get_travel_time(pickup_place) \
                         and driver.is_idle:
@@ -96,7 +125,8 @@ class Dispatcher:
 
             # assigning the rider to the fastest driver
             fastest_driver.rider = rider
-
+            # fastest_driver.start_drive(rider.origin)
+            print(fastest_driver)
             return fastest_driver
 
     def request_rider(self, driver):
@@ -107,6 +137,21 @@ class Dispatcher:
         @type self: Dispatcher
         @type driver: Driver
         @rtype: Rider | None
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher.waiting_list.append(rider1)
+        >>> print(dispatcher.request_rider(driver1))
+        "Jane Doe wants to go from 10 streets from the left, 13 streets up to 1 streets from the left
+        to 1 street from the left, 2 streets up, and is waiting"
         """
 
         if driver not in self._available_drivers:

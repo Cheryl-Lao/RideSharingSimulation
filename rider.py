@@ -54,9 +54,16 @@ class Rider:
 
     def __str__(self):
         """Return a string representation.
-
         @type self: Rider
         @rtype: str
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider = Rider(name1, origin1, destination1, patience1)
+        >>> print(rider)
+        >>> "Jane Does wants to go from 10 streets left, 13 up to 1 streets left, 2 up and is waiting."
         """
 
         return "{} wants to go from ({}) to ({}) and is {}"\

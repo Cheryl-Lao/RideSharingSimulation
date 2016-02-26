@@ -62,7 +62,7 @@ class Simulation:
         while not self._events.is_empty():
 
             event_to_do = self._events.remove()
-
+            print(event_to_do)
             new_events = event_to_do.do(self._dispatcher, self._monitor)
 
             for new_event in new_events:

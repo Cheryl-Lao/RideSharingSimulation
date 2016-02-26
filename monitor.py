@@ -122,6 +122,8 @@ class Monitor:
 
         @type self: Monitor
         @rtype: dict[str, object]
+
+        Examples not feasible
         """
 
         return {"rider_wait_time": self._average_wait_time(),

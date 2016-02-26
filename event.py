@@ -66,6 +66,7 @@ class Event:
         >>> first == second
         True
         """
+
         return self.timestamp == other.timestamp
 
     def __ne__(self, other):
@@ -275,7 +276,7 @@ class DriverRequest(Event):
         # If there is one available, the driver starts driving towards the
         # rider, and the method returns a Pickup event for when the driver
         # arrives at the riders location.
-
+        print(self.driver.location)
         monitor.notify(self.timestamp, DRIVER, REQUEST,
                        self.driver.id, self.driver.location)
 
@@ -313,12 +314,36 @@ class DriverRequest(Event):
 
 class Cancellation(Event):
 
-    """A rider cancels a request.
+    """Assign the rider to a driver or add the rider to a waiting list.
+        If the rider is assigned to a driver, the driver starts driving to
+        the rider.
 
-    === Attributes ===
-    @type rider: Rider
-        The rider.
-    """
+        Change a waiting rider to a cancelled rider unless if the rider has
+         already been picked up.
+
+        @type self: Cancellation
+        @type dispatcher: Dispatcher
+        @type monitor: Monitor
+        @rtype: list[Event]
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._available_drivers.append(driver1)
+        >>> timestamp1 = 4
+        >>> event1 = DriverRequest(timestamp1, driver1)
+        >>> timestamp2 = event1.timestamp + rider1.patience
+        >>> event2 = Cancellation(timestamp2,rider1)
+        >>> rider1.status
+        cancelled
+        """
 
     def __init__(self, timestamp, rider):
         """Initialize a RiderRequest event.
@@ -342,6 +367,24 @@ class Cancellation(Event):
         @type dispatcher: Dispatcher
         @type monitor: Monitor
         @rtype: list[Event]
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._available_drivers.append(driver1)
+        >>> timestamp1 = 4
+        >>> event1 = DriverRequest(timestamp1, driver1)
+        >>> timestamp2 = event1.timestamp + rider1.patience
+        >>> event2 = Cancellation(timestamp2,rider1)
+        >>> rider1.status
+        "cancelled"
         """
 
         events = []
@@ -362,10 +405,27 @@ class Cancellation(Event):
 
         @type self: Cancellation
         @rtype: str
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._available_drivers.append(driver)
+        >>> timestamp1 = 4
+        >>> event1 = DriverRequest(timestamp1, driver1)
+        >>> event2 = Cancellation(event1.timestamp,rider1)
+        >>> print(event2)
+        "4 -- Jane Doe: Cancel a ride"
         """
 
-        return "{} -- {} -- {}: Cancel a ride"\
-            .format(self.timestamp, self.rider)
+        return "{} -- {}: Cancel a ride"\
+            .format(self.timestamp, self.rider.id)
 
 
 class Pickup(Event):
@@ -379,10 +439,6 @@ class Pickup(Event):
 
     @type self: Pickup
     @rtype: None
-
-    >>>
-    >>>
-    >>>
 
     """
 
@@ -411,15 +467,45 @@ class Pickup(Event):
         @type dispatcher: Dispatcher
         @type monitor: Monitor
         @rtype: list[Event]
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._available_drivers.append(driver)
+        >>> timestamp1 = 4
+        >>> event1 = DriverRequest(timestamp1, driver1)
+        >>> timestamp2 = event1.timestamp + driver1.get_travel_time(rider1.origin)
+        >>> event2 = Pickup(timestamp2, rider1, driver1)
+        >>> rider1.status
+        "satisfied"
         """
 
         monitor.notify(self.timestamp, DRIVER, PICKUP,
                        self.driver.id, self.driver.location)
 
+        monitor.notify(self.timestamp, RIDER, PICKUP,
+                       self.rider.id, self.rider.origin)
+
         events = []
 
-        self.driver.location = self.rider.origin
-        if self.rider.status is CANCELLED:
+        # The driver arrives
+        self.driver.location = self.driver.destination
+
+        # If the rider has cancelled, get a new rider
+        if self.rider.status == CANCELLED:
+
+            if len(dispatcher._waiting_list) == 0:
+                print("This new rider is none!!!")
+
+            else:
+                new_rider = dispatcher.request_rider(self.driver)
             events.append(DriverRequest(self.timestamp, self.driver))
         else:
             self.rider.status = SATISFIED
@@ -434,7 +520,26 @@ class Pickup(Event):
 
         @type self: Pickup
         @rtype: str
+
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(3,7)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._available_drivers.append(driver)
+        >>> timestamp1 = 4
+        >>> event1 = DriverRequest(timestamp1, driver1)
+        >>> timestamp2 = event1.timestamp + driver1.get_travel_time(rider1.origin)
+        >>> event2 = Pickup(timestamp2, rider1, driver1)
+        >>> print(event2)
+        "5 -- John Doe at 3 streets from the left, 7 up has a speed of 5 and is idle: Pick up"
         """
+
         return "{} -- {}: Pick up".format(self.timestamp, self.driver)
 
 
@@ -447,10 +552,6 @@ class Dropoff(Event):
     @type self: Dropoff
     @rtype: RiderRequest
 
-    >>>
-    >>>
-    >>>
-
     """
 
     def __init__(self, timestamp, rider, driver):
@@ -461,23 +562,37 @@ class Dropoff(Event):
         @type rider: Rider
         @rtype: None
         """
+
         super().__init__(timestamp)
         self.driver = driver
         self.rider = rider
 
     def do(self, dispatcher, monitor):
 
-        """Assign the rider to a driver or add the rider to a waiting list.
-        If the rider is assigned to a driver, the driver starts driving to
-        the rider.
+        """Return a string representation of this event.
 
-        Return a Cancellation event. If the rider is assigned to a driver,
-        also return a Pickup event.
+        @type self: Pickup
+        @rtype: str
 
-        @type self: RiderRequest
-        @type dispatcher: Dispatcher
-        @type monitor: Monitor
-        @rtype: Event
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(3,7)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._available_drivers.append(driver1)
+        >>> timestamp1 = 4
+        >>> event1 = DriverRequest(timestamp1, driver1)
+        >>> timestamp2 = event1.timestamp + driver1.get_travel_time(rider1.origin)
+        >>> event2 = Pickup(timestamp2, rider1, driver1)
+        >>> timestamp3 = event2.timestamp + event2.driver.get_travel_time(event2.rider.destination)
+        >>> event3 = Dropoff(timestamp3, event2.rider, event2.driver)
+        >>> print(event3)
+        "6 -- John Doe at 1 streets from the left, 2 up has a speed of 5 and is idle: Pick up"
         """
 
         monitor.notify(self.timestamp, DRIVER, DROPOFF,
