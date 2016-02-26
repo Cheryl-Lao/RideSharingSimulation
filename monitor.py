@@ -182,7 +182,7 @@ class Monitor:
                     # The distance travelled between each activity is
                     # added to total
                     total_distance += \
-                        manhattan_distance(activities[i],activities[i + 1])
+                        manhattan_distance(activities[i].location, activities[i + 1].location)
 
         if len(self._activities[DRIVER]) == 0:
             return 0

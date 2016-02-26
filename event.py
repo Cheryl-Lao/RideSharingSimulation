@@ -292,12 +292,10 @@ class DriverRequest(Event):
         # Find how long it will take the the driver to reach the location
         travel_time = self.driver.get_travel_time(self.driver.destination)
 
-        # The poor driver is going to go there no matter what
-        events.append(Pickup(self.timestamp + travel_time, rider, self.driver))
-
         # Driver starts driving towards the rider's location
         self.driver.start_drive(self.driver.destination)
 
+        # The poor driver is going to go there no matter what
         events.append(Pickup(self.timestamp + travel_time, rider, self.driver))
 
         return events
@@ -395,7 +393,7 @@ class Cancellation(Event):
 
             dispatcher.cancel_ride(self.rider)
 
-            monitor.notify(self.timestamp + self.rider.patience, RIDER,
+            monitor.notify(self.timestamp, RIDER,
                            CANCEL, self.rider.id, self.rider.origin)
 
         return events
@@ -497,21 +495,29 @@ class Pickup(Event):
 
         # The driver arrives
         self.driver.location = self.driver.destination
-
+        print(str(self.driver.location) + "CHECK 1")
         # If the rider has cancelled, get a new rider
         if self.rider.status == CANCELLED:
-
+            print("CHECK 4")
             if len(dispatcher._waiting_list) == 0:
+                print(str(self.driver.location))
+                print("CHECK 3")
                 print("This new rider is none!!!")
 
             else:
+                print(str(self.driver.location))
+                print("CHECK 2")
                 new_rider = dispatcher.request_rider(self.driver)
             events.append(DriverRequest(self.timestamp, self.driver))
         else:
+            print(self.driver.location)
+            print("CHECK 5")
             self.rider.status = SATISFIED
             travel_time = self.driver.start_ride(self.rider)
+            print(str(self.driver.location)+"CHECK 6")
             events.append(Dropoff(self.timestamp + travel_time, self.rider,
                                   self.driver))
+            print(str(self.driver.location)+"CHECK 7")
 
         return events
 
@@ -594,10 +600,12 @@ class Dropoff(Event):
         >>> print(event3)
         "6 -- John Doe at 1 streets from the left, 2 up has a speed of 5 and is idle: Pick up"
         """
-
+        print(str(self.driver.location)+"CHECK 8")
         monitor.notify(self.timestamp, DRIVER, DROPOFF,
                        self.driver.id, self.driver.location)
 
+        monitor.notify(self.timestamp, RIDER, DROPOFF,
+                       self.rider.id, self.rider.destination)
         events = []
 
         """
@@ -607,8 +615,9 @@ class Dropoff(Event):
         """
 
         self.rider.status = SATISFIED
-
+        print(str(self.driver.location)+"CHECK 9")
         self.driver.end_ride()
+        print(str(self.driver.location)+"CHECK 10")
 
         dispatcher.request_rider(self.driver)
 

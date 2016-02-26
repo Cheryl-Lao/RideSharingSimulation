@@ -84,7 +84,7 @@ class Dispatcher:
         >>> id1 = 'John Doe'
         >>> driver = Driver(id1, location1, speed1)
         >>> dispatcher = Dispatcher()
-        >>> dispatcher.available_drivers.append(driver)
+        >>> dispatcher._available_drivers.append(driver)
         >>> print(dispatcher.request_driver(rider))
         "John Doe at 3 streets from the left, 2 streets up has a speed of 5 and is idle."
         """
@@ -148,12 +148,13 @@ class Dispatcher:
         >>> id1 = 'John Doe'
         >>> driver1 = Driver(id1, location1, speed1)
         >>> dispatcher = Dispatcher()
-        >>> dispatcher.waiting_list.append(rider1)
+        >>> dispatcher._waiting_list.append(rider1)
         >>> print(dispatcher.request_rider(driver1))
         "Jane Doe wants to go from 10 streets from the left, 13 streets up to 1 streets from the left
         to 1 street from the left, 2 streets up, and is waiting"
         """
 
+        print(driver.location)
         if driver not in self._available_drivers:
             self._available_drivers.append(driver)
 
@@ -164,6 +165,7 @@ class Dispatcher:
             # The rider at the front of the list has been waiting the longest
             assigned_rider = self._waiting_list.pop(0)
             # Driver starts going towards the rider
+            print(driver.location)
             driver.destination = assigned_rider.origin
 
         return assigned_rider
@@ -186,6 +188,6 @@ class Dispatcher:
         >>> dispatcher._waiting_list
         []
         """
-
-        self._waiting_list.remove(rider)
+        if rider in self._waiting_list:
+            self._waiting_list.remove(rider)
 

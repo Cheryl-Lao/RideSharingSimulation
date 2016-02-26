@@ -191,8 +191,11 @@ class Driver:
         >>> driver.destination
         None
         """
-
-        self.location = self.destination
+        print(str(self.location)+"CHECK 11")
+        print(self.destination is None)
+        if self.destination is not None:
+            self.location = self.destination
+        print(str(self.location)+"CHECK 12")
         self.is_idle = True
         self.destination = None
         self.rider = None
