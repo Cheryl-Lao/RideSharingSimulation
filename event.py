@@ -269,6 +269,22 @@ class DriverRequest(Event):
         @type dispatcher: Dispatcher
         @type monitor: Monitor
         @rtype: list[Event]
+        
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._available_drivers.append(driver1)
+        >>> timestamp1 = 4
+        >>> event1 = DriverRequest(timestamp1, driver1)
+        >>> driver1.rider == rider1
+        True
         """
         # Notify the monitor about the request.
 
@@ -305,6 +321,22 @@ class DriverRequest(Event):
 
         @type self: DriverRequest
         @rtype: str
+        
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(10,13)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._available_drivers.append(driver1)
+        >>> timestamp1 = 4
+        >>> event1 = DriverRequest(timestamp1, driver1)
+        >>> print(event1)
+        "4 -- John Doe at 3 streets from the left, 2 up has a speed of 5 and is idle: Request a rider"
         """
 
         return "{} -- {}: Request a rider".format(self.timestamp, self.driver)
@@ -414,7 +446,7 @@ class Cancellation(Event):
         >>> id1 = 'John Doe'
         >>> driver1 = Driver(id1, location1, speed1)
         >>> dispatcher = Dispatcher()
-        >>> dispatcher._available_drivers.append(driver)
+        >>> dispatcher._available_drivers.append(driver1)
         >>> timestamp1 = 4
         >>> event1 = DriverRequest(timestamp1, driver1)
         >>> event2 = Cancellation(event1.timestamp,rider1)
@@ -476,7 +508,7 @@ class Pickup(Event):
         >>> id1 = 'John Doe'
         >>> driver1 = Driver(id1, location1, speed1)
         >>> dispatcher = Dispatcher()
-        >>> dispatcher._available_drivers.append(driver)
+        >>> dispatcher._available_drivers.append(driver1)
         >>> timestamp1 = 4
         >>> event1 = DriverRequest(timestamp1, driver1)
         >>> timestamp2 = event1.timestamp + driver1.get_travel_time(rider1.origin)
@@ -537,7 +569,7 @@ class Pickup(Event):
         >>> id1 = 'John Doe'
         >>> driver1 = Driver(id1, location1, speed1)
         >>> dispatcher = Dispatcher()
-        >>> dispatcher._available_drivers.append(driver)
+        >>> dispatcher._available_drivers.append(driver1)
         >>> timestamp1 = 4
         >>> event1 = DriverRequest(timestamp1, driver1)
         >>> timestamp2 = event1.timestamp + driver1.get_travel_time(rider1.origin)
@@ -597,8 +629,8 @@ class Dropoff(Event):
         >>> event2 = Pickup(timestamp2, rider1, driver1)
         >>> timestamp3 = event2.timestamp + event2.driver.get_travel_time(event2.rider.destination)
         >>> event3 = Dropoff(timestamp3, event2.rider, event2.driver)
-        >>> print(event3)
-        "6 -- John Doe at 1 streets from the left, 2 up has a speed of 5 and is idle: Pick up"
+        >>> event3.driver.location == event3.rider.destination
+        True        
         """
         print(str(self.driver.location)+"CHECK 8")
         monitor.notify(self.timestamp, DRIVER, DROPOFF,
@@ -630,6 +662,26 @@ class Dropoff(Event):
 
         @type self: Pickup
         @rtype: str
+        
+        >>> name1 = 'Jane Doe'
+        >>> origin1 = Location(3,7)
+        >>> destination1 = Location(1,2)
+        >>> patience1 = 20
+        >>> rider1 = Rider(name1, origin1, destination1, patience1)
+        >>> location1 = Location(3,2)
+        >>> speed1 = 5
+        >>> id1 = 'John Doe'
+        >>> driver1 = Driver(id1, location1, speed1)
+        >>> dispatcher = Dispatcher()
+        >>> dispatcher._available_drivers.append(driver1)
+        >>> timestamp1 = 4
+        >>> event1 = DriverRequest(timestamp1, driver1)
+        >>> timestamp2 = event1.timestamp + driver1.get_travel_time(rider1.origin)
+        >>> event2 = Pickup(timestamp2, rider1, driver1)
+        >>> timestamp3 = event2.timestamp + event2.driver.get_travel_time(event2.rider.destination)
+        >>> event3 = Dropoff(timestamp3, event2.rider, event2.driver)
+        >>> print(event3)
+        "6 -- John Doe at 1 streets from the left, 2 up has a speed of 5 and is idle: Pick up"
         """
         return "{} -- {}: Pick up".format(self.timestamp, self.driver)
 
